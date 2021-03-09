@@ -19,19 +19,22 @@ module.exports = function (app) {
       let lang = req.body.locale;
       let regex = /[\w]+/;
       let result = "";
+      /*
       let [words, nonWords] = translator.separateWords(src);
       console.log(words);
       console.log(nonWords);
+      */
 
       if (lang=="british-to-american"){
-        words = words.map(x=>translator.americanize(x));
+        //words = words.map(x=>translator.americanize(x));
+        result = translator.americanize(src);
       } else if (lang=="american-to-british"){
         words = words.map(x=>translator.britishise(x));
       } else {
         res.json({ error: 'Invalid value for locale field' });
         return;
       }
-
+      /*
       let loop = words.length>=nonWords.length? words.length : nonWords.length;
       console.log(`loop: ${loop}`);
 
@@ -49,6 +52,7 @@ module.exports = function (app) {
         }
       }
       result = translator.britishiseTitles(result);
+      */
       console.log(result)
       res.json({'translation':result});
     });
