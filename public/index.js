@@ -24,7 +24,7 @@ const translateHandler = async () => {
     return;
   }
 
-  translatedArea.innerHTML = parsed.translation;
+  translatedArea.innerHTML = parsed.translation
   return;
 };
 

@@ -29,7 +29,7 @@ module.exports = function (app) {
         //words = words.map(x=>translator.americanize(x));
         result = translator.americanize(src);
       } else if (lang=="american-to-british"){
-        words = words.map(x=>translator.britishise(x));
+        result = translator.britishise(src);
       } else {
         res.json({ error: 'Invalid value for locale field' });
         return;
