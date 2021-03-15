@@ -63,7 +63,7 @@ class Translator {
   }
 
   changeTimeFormat (input,from,to){
-    let re = new RegExp("\\d\\d"+(from=='.'?'\\.':from)+"\\d\\d",'g'); //double slashes to escape the dot character, otherwise it matches any character 
+    let re = new RegExp("\\d*\\d"+(from=='.'?'\\.':from)+"\\d\\d",'g'); //double slashes to escape the dot character, otherwise it matches any character 
     let replacer = new RegExp(to);
     let found = input.match(re);
     let rtn = input;
