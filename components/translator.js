@@ -25,7 +25,7 @@ class Translator {
     let regex = /[\w]+/;
     let translated = regex.test(input[0])? this.combineWords(words,nonWords) : this.combineWords(nonWords,words);
     translated = this.langSpecify(translated, britishOnly);
-    //translated = '<span style="color:blue">'+translated+'</span>';
+    translated = this.changeTimeFormat(translated,".",":");
     return translated;
   }
 
@@ -37,17 +37,17 @@ class Translator {
       let rtn = americanOnly[word];
       if (rtn!=undefined){
         console.log('flag - americanOnly')
-        return rtn;
+        return this.highlight(rtn);
       } else {
         rtn = americanToBritishSpelling[word]
         if (rtn!=undefined){
           console.log('flag - americanToBritishSpelling')
-          return rtn;
+          return this.highlight(rtn);
         } else {
           rtn = americanToBritishTitles[word]
           if (rtn!=undefined){
             console.log('flag - americanToBritishTitles')
-            return rtn;
+            return this.highlight(rtn);
           } else {
             return original;
           }
@@ -58,18 +58,29 @@ class Translator {
     let translated = regex.test(input[0])? this.combineWords(words,nonWords) : this.combineWords(nonWords,words);
     translated = this.langSpecify(translated,americanOnly);
     translated = this.langSpecify(translated, americanToBritishTitles);
-    
+    translated = this.changeTimeFormat(translated,":",".");
     return translated;
   }
 
-  britishiseTitles (input) {
+  changeTimeFormat (input,from,to){
+    let re = new RegExp("\\d\\d"+(from=='.'?'\\.':from)+"\\d\\d",'g'); //double slashes to escape the dot character, otherwise it matches any character 
+    let replacer = new RegExp(to);
+    let found = input.match(re);
     let rtn = input;
-    console.log(`input: ${input}`)
-    Object.keys(americanToBritishTitles).forEach(title=>{
-      rtn = rtn.replace(title, americanToBritishTitles[title]+" ");
-    })
-    return rtn;
+    //console.log(re);
+    //console.log(typeof(found));
+    //console.log(found)
+    if (found){
+      found.forEach(f=>{
+        //console.log(f)
+        replacer = this.highlight(f.replace(from,to));
+        //console.log(`replacer: ${replacer}`)
+        rtn = rtn.replace(f,replacer)
+      })
+    }
+    return rtn; 
   }
+
 
   langSpecify (input, sourceLangOnly) {
     let rtn = input;
@@ -83,9 +94,8 @@ class Translator {
           //for titles
           if (sourceLangOnly == americanToBritishTitles) replacer = americanToBritishTitles[key][0].toUpperCase().concat(americanToBritishTitles[key].slice(1,));
           //
-          rtn = rtn.toLowerCase().replace(key, this.highlight(replacer));
-
-          
+          let re = new RegExp(key,'i')
+          rtn = rtn.replace(re, this.highlight(replacer));
         }
       }
     })
@@ -97,7 +107,7 @@ class Translator {
     let wordChar = /[\W\s]+/;
     let nonWordChar = /[^\W\s]+/;
     let words = input.split(wordChar);
-    console.log(words)
+    //console.log(words)
     let nonWords = input.split(nonWordChar);
     words = words.filter(x=>x.length>0)
     nonWords = nonWords.filter(x=>x.length>0)
